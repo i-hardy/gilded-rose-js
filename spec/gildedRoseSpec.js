@@ -147,6 +147,38 @@ describe('Gilded Rose', () => {
     });
   });
 
+  describe('Conjured Item', () => {
+    let testConjured;
+
+    beforeEach(() => {
+      testConjured = new ConjuredItem('Conjured Jar of Jam', 10, 20);
+    });
+
+    describe('update', () => {
+      it('reduces the sellIn by 1', () => {
+        testConjured.update();
+        expect(testConjured.sellIn).toEqual(9);
+      });
+
+      it('reduces the quality by 2', () => {
+        testConjured.update();
+        expect(testConjured.quality).toEqual(18);
+      });
+
+      it('reduces the quality by 4 if out of date', () => {
+        testConjured.sellIn = 0;
+        testConjured.update();
+        expect(testConjured.quality).toEqual(16);
+      });
+
+      it('cannot reduce the quality below zero', () => {
+        testConjured.quality = 0;
+        testConjured.update();
+        expect(testConjured.quality).toEqual(0);
+      });
+    });
+  });
+
   describe('Shop', () => {
     let testItems;
     let testShop;
@@ -154,13 +186,15 @@ describe('Gilded Rose', () => {
     let brie;
     let sulfuras;
     let passes;
+    let conjured;
 
     beforeEach(() => {
       jam = new Item('Jar of Jam', 10, 20);
       brie = new Item('Aged Brie', 10, 20);
       sulfuras = new Item('Sulfuras, Hand of Ragnaros', 10, 20);
       passes = new Item('Backstage passes to a TAFKAL80ETC concert', 10, 20);
-      testItems = [jam, brie, sulfuras, passes];
+      conjured = new Item('Conjured Jar of Jam', 10, 20);
+      testItems = [jam, brie, sulfuras, passes, conjured];
       testShop = new Shop(testItems);
     });
 
@@ -187,6 +221,10 @@ describe('Gilded Rose', () => {
       
       it('turns any backstage passes into instances of the BackstagePasses class', () => {
         expect(testShop.workingItems[3]).toEqual(jasmine.any(BackstagePasses));
+      });
+
+      it('turns any conjured items into instances of the ConjuredItem class', () => {
+        expect(testShop.workingItems[4]).toEqual(jasmine.any(ConjuredItem));
       });
     });
 

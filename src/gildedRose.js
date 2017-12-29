@@ -49,6 +49,14 @@ class BackstagePasses extends Item {
   }
 }
 
+class ConjuredItem extends Item {
+  update(){
+    this.sellIn -= 1;
+    this.quality -= this.sellIn < 0 ? 4 : 2;
+    this.quality = this.quality < 0 ? 0 : this.quality;
+  }
+}
+
 class Shop {
   constructor(items = []){
     this.items = items;
@@ -57,6 +65,7 @@ class Shop {
       'Aged Brie': AgedBrie,
       'Sulfuras, Hand of Ragnaros': Sulfuras,
       'Backstage passes': BackstagePasses,
+      'Conjured': ConjuredItem,
     };
   }
   getItemClass(item){
