@@ -6,27 +6,37 @@ class Item {
   }
 }
 
-class StandardItem extends Item {
-  update(){
+class BaseItem extends Item {
+  update(){}
+  reduceSellIn(){
     this.sellIn -= 1;
+  }
+  checkQualityBounds(){
+    if (this.quality > 50) {
+      this.quality = 50;
+    } else if (this.quality < 0) {
+      this.quality = 0;
+    }
+  }
+}
+
+class StandardItem extends BaseItem {
+  update(){
+    this.reduceSellIn();
     this.quality -= this.sellIn < 0 ? 2 : 1;
-    this.quality = this.quality < 0 ? 0 : this.quality;
+    this.checkQualityBounds();
   }
 }
 
-class AgedBrie extends Item {
+class AgedBrie extends BaseItem {
   update(){
-    this.sellIn -= 1;
+    this.reduceSellIn();
     this.quality += this.sellIn < 0 ? 2 : 1;
-    this.quality = this.quality > 50 ? 50 : this.quality;
+    this.checkQualityBounds();
   }
 }
 
-class Sulfuras extends Item {
-  update() {}
-}
-
-class BackstagePasses extends Item {
+class BackstagePasses extends BaseItem {
   determineQuality(){
     switch (true) {
       case this.sellIn < 0:
@@ -43,17 +53,17 @@ class BackstagePasses extends Item {
     }
   }
   update(){
-    this.sellIn -= 1;
+    this.reduceSellIn();
     this.determineQuality();
-    this.quality = this.quality > 50 ? 50 : this.quality;
+    this.checkQualityBounds();
   }
 }
 
-class ConjuredItem extends Item {
+class ConjuredItem extends BaseItem {
   update(){
-    this.sellIn -= 1;
+    this.reduceSellIn();
     this.quality -= this.sellIn < 0 ? 4 : 2;
-    this.quality = this.quality < 0 ? 0 : this.quality;
+    this.checkQualityBounds();
   }
 }
 
@@ -63,7 +73,7 @@ class Shop {
     this.itemClasses = {
       default: StandardItem,
       'Aged Brie': AgedBrie,
-      'Sulfuras, Hand of Ragnaros': Sulfuras,
+      'Sulfuras, Hand of Ragnaros': BaseItem,
       'Backstage passes': BackstagePasses,
       'Conjured': ConjuredItem,
     };

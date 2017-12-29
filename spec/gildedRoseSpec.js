@@ -83,11 +83,11 @@ describe('Gilded Rose', () => {
     });
   });
 
-  describe('Sulfuras', () => {
+  describe('Base Item', () => {
     let testSulfuras;
     
     beforeEach(() => {
-      testSulfuras = new Sulfuras('Sulfuras, Hand of Ragnaros', 10, 80);
+      testSulfuras = new BaseItem('Sulfuras, Hand of Ragnaros', 10, 80);
     });
     
     describe('update', () => {
@@ -215,8 +215,8 @@ describe('Gilded Rose', () => {
         expect(testShop.workingItems[1]).toEqual(jasmine.any(AgedBrie));
       });
       
-      it('turns any Sulfuras into instances of the Sulfuras class', () => {
-        expect(testShop.workingItems[2]).toEqual(jasmine.any(Sulfuras));
+      it('turns any Sulfuras into instances of the BaseItem class', () => {
+        expect(testShop.workingItems[2]).toEqual(jasmine.any(BaseItem));
       });
       
       it('turns any backstage passes into instances of the BackstagePasses class', () => {
