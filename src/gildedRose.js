@@ -15,9 +15,6 @@ class StandardItem extends Item {
 }
 
 class AgedBrie extends Item {
-  constructor (sellIn, quality) {
-    super('Aged Brie', sellIn, quality);
-  }
   update(){
     this.sellIn -= 1;
     this.quality += this.sellIn < 0 ? 2 : 1;
@@ -26,16 +23,10 @@ class AgedBrie extends Item {
 }
 
 class Sulfuras extends Item {
-  constructor(sellIn, quality) {
-    super('Sulfuras, Hand of Ragnaros', sellIn, quality);
-  }
   update() {}
 }
 
 class BackstagePasses extends Item {
-  constructor(sellIn, quality) {
-    super('Backstage passes to a TAFKAL80ETC concert', sellIn, quality);
-  }
   determineQuality(){
     switch (true) {
       case this.sellIn < 0:
@@ -59,56 +50,37 @@ class BackstagePasses extends Item {
 }
 
 class Shop {
-  constructor(items=[]){
+  constructor(items = []){
     this.items = items;
+    this.itemClasses = {
+      default: StandardItem,
+      'Aged Brie': AgedBrie,
+      'Sulfuras, Hand of Ragnaros': Sulfuras,
+      'Backstage passes': BackstagePasses,
+    };
+  }
+  getItemClass(item){
+    const classNames = Object.keys(this.itemClasses);
+    return classNames.find(name => item.name.includes(name)) || 'default';
+  }
+  categoriseItems(){
+    this.workingItems = [];
+    this.items.forEach(item => {
+      const ThisClass = this.itemClasses[this.getItemClass(item)];
+      this.workingItems.push(new ThisClass(item.name, item.sellIn, item.quality));
+    })
+  }
+  updateOriginalList(){
+    this.workingItems.forEach((item, index) => {
+      this.items[index].sellIn = item.sellIn;
+      this.items[index].quality = item.quality;
+    })
   }
   updateQuality() {
-    for (var i = 0; i < this.items.length; i++) {
-      if (this.items[i].name != 'Aged Brie' && this.items[i].name != 'Backstage passes to a TAFKAL80ETC concert') {
-        if (this.items[i].quality > 0) {
-          if (this.items[i].name != 'Sulfuras, Hand of Ragnaros') {
-            this.items[i].quality = this.items[i].quality - 1;
-          }
-        }
-      } else {
-        if (this.items[i].quality < 50) {
-          this.items[i].quality = this.items[i].quality + 1;
-          if (this.items[i].name == 'Backstage passes to a TAFKAL80ETC concert') {
-            if (this.items[i].sellIn < 11) {
-              if (this.items[i].quality < 50) {
-                this.items[i].quality = this.items[i].quality + 1;
-              }
-            }
-            if (this.items[i].sellIn < 6) {
-              if (this.items[i].quality < 50) {
-                this.items[i].quality = this.items[i].quality + 1;
-              }
-            }
-          }
-        }
-      }
-      if (this.items[i].name != 'Sulfuras, Hand of Ragnaros') {
-        this.items[i].sellIn = this.items[i].sellIn - 1;
-      }
-      if (this.items[i].sellIn < 0) {
-        if (this.items[i].name != 'Aged Brie') {
-          if (this.items[i].name != 'Backstage passes to a TAFKAL80ETC concert') {
-            if (this.items[i].quality > 0) {
-              if (this.items[i].name != 'Sulfuras, Hand of Ragnaros') {
-                this.items[i].quality = this.items[i].quality - 1;
-              }
-            }
-          } else {
-            this.items[i].quality = this.items[i].quality - this.items[i].quality;
-          }
-        } else {
-          if (this.items[i].quality < 50) {
-            this.items[i].quality = this.items[i].quality + 1;
-          }
-        }
-      }
-    }
-
-    return this.items;
+    this.categoriseItems();
+    this.workingItems.forEach(item => {
+      item.update();
+    });
+    this.updateOriginalList();
   }
 }

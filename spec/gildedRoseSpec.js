@@ -55,7 +55,7 @@ describe('Gilded Rose', () => {
     let testBrie;
 
     beforeEach(() => {
-      testBrie = new AgedBrie(10, 20);
+      testBrie = new AgedBrie('Aged Brie', 10, 20);
     });
 
     describe('update', () => {
@@ -87,7 +87,7 @@ describe('Gilded Rose', () => {
     let testSulfuras;
     
     beforeEach(() => {
-      testSulfuras = new Sulfuras(10, 80);
+      testSulfuras = new Sulfuras('Sulfuras, Hand of Ragnaros', 10, 80);
     });
     
     describe('update', () => {
@@ -107,7 +107,7 @@ describe('Gilded Rose', () => {
     let testPasses;
 
     beforeEach(() => {
-      testPasses = new BackstagePasses(20, 20);
+      testPasses = new BackstagePasses('Backstage passes to a TAFKAL80ETC concert', 20, 20);
     });
 
     describe('update', () => {
@@ -162,6 +162,40 @@ describe('Gilded Rose', () => {
       passes = new Item('Backstage passes to a TAFKAL80ETC concert', 10, 20);
       testItems = [jam, brie, sulfuras, passes];
       testShop = new Shop(testItems);
+    });
+
+    describe('categoriseItems', () => {
+      beforeEach(() => {
+        testShop.categoriseItems();
+      });
+
+      it('creates an array of categorised items', () => {
+        expect(testShop.workingItems).toEqual(jasmine.any(Array));
+      });
+
+      it('turns any standard items into instances of the standard item class', () => {
+        expect(testShop.workingItems[0]).toEqual(jasmine.any(StandardItem));
+      });
+
+      it('turns any Aged Brie into instances of the AgedBrie class', () => {
+        expect(testShop.workingItems[1]).toEqual(jasmine.any(AgedBrie));
+      });
+      
+      it('turns any Sulfuras into instances of the Sulfuras class', () => {
+        expect(testShop.workingItems[2]).toEqual(jasmine.any(Sulfuras));
+      });
+      
+      it('turns any backstage passes into instances of the BackstagePasses class', () => {
+        expect(testShop.workingItems[3]).toEqual(jasmine.any(BackstagePasses));
+      });
+    });
+
+    describe('updateOriginalList', () => {
+      it('updates the original items list according to the workingItems list', () => {
+        testShop.workingItems = [new StandardItem('Jar of Jam', 9, 19)];
+        testShop.updateOriginalList();
+        expect(jam.sellIn).toEqual(9);
+      });
     });
 
     describe('updateQuality', () => {
