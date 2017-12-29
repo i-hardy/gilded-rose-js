@@ -19,6 +19,134 @@ describe('Gilded Rose', () => {
     });
   });
 
+  describe('Standard Item', () => {
+    let testItem;
+
+    beforeEach(() => {
+      testItem = new StandardItem('Jar of Jam', 10, 20);
+    });
+
+    describe('update', () => {
+      it('decreases the sellIn by 1', () => {
+        testItem.update();
+        expect(testItem.sellIn).toEqual(9);
+      });
+
+      it('decreases the quality by 1', () => {
+        testItem.update();
+        expect(testItem.quality).toEqual(19);
+      });
+
+      it('decreases the quality by 2 if out of date', () => {
+        testItem.sellIn = -1;
+        testItem.update();
+        expect(testItem.quality).toEqual(18);
+      });
+
+      it('cannot decrease quality below zero', () => {
+        testItem.quality = 0;
+        testItem.update();
+        expect(testItem.quality).toEqual(0);
+      });
+    });
+  });
+
+  describe('Aged Brie', () => {
+    let testBrie;
+
+    beforeEach(() => {
+      testBrie = new AgedBrie(10, 20);
+    });
+
+    describe('update', () => {
+      it('decreases the sellIn by 1', () => {
+        testBrie.update();
+        expect(testBrie.sellIn).toEqual(9);
+      });
+
+      it('increases the quality by 1', () => {
+        testBrie.update();
+        expect(testBrie.quality).toEqual(21);
+      });
+
+      it('increases the quality by 2 if out of date', () => {
+        testBrie.sellIn = -1;
+        testBrie.update();
+        expect(testBrie.quality).toEqual(22);
+      });
+
+      it('cannot increase the quality above 50', () => {
+        testBrie.quality = 50;
+        testBrie.update();
+        expect(testBrie.quality).toEqual(50);
+      });
+    });
+  });
+
+  describe('Sulfuras', () => {
+    let testSulfuras;
+    
+    beforeEach(() => {
+      testSulfuras = new Sulfuras(10, 80);
+    });
+    
+    describe('update', () => {
+      it('does not change its sellIn', () => {
+        testSulfuras.update();
+        expect(testSulfuras.sellIn).toEqual(10);
+      });
+
+      it('does not change its quality', () => {
+        testSulfuras.update();
+        expect(testSulfuras.quality).toEqual(80);
+      });
+    });
+  });
+
+  describe('Backstage Passes', () => {
+    let testPasses;
+
+    beforeEach(() => {
+      testPasses = new BackstagePasses(20, 20);
+    });
+
+    describe('update', () => {
+      it('decreases the sellIn by 1', () => {
+        testPasses.update();
+        expect(testPasses.sellIn).toEqual(19);
+      });
+
+      it('increases the quality by 1', () => {
+        testPasses.update();
+        expect(testPasses.quality).toEqual(21);
+      });
+
+      it('increases the quality by 2 with 10 days remaining', () => {
+        testPasses.sellIn = 10;
+        testPasses.update();
+        expect(testPasses.quality).toEqual(22);
+      });
+
+      it('increases the quality by 3 with 5 days remaining', () => {
+        testPasses.sellIn = 5;
+        testPasses.update();
+        expect(testPasses.quality).toEqual(23);
+      });
+
+      it('decreases the quality to zero with no days remaining', () => {
+        testPasses.sellIn = 0;
+        testPasses.update();
+        expect(testPasses.quality).toEqual(0);
+      });
+
+      it('cannot increase the quality above 50', () => {
+        testPasses.quality = 50;
+        testPasses.update();
+        expect(testPasses.quality).toEqual(50);
+      });
+    });
+  });
+
   describe('Shop', () => {
     let testItems;
     let testShop;

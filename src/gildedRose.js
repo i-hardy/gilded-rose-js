@@ -6,6 +6,58 @@ class Item {
   }
 }
 
+class StandardItem extends Item {
+  update(){
+    this.sellIn -= 1;
+    this.quality -= this.sellIn < 0 ? 2 : 1;
+    this.quality = this.quality < 0 ? 0 : this.quality;
+  }
+}
+
+class AgedBrie extends Item {
+  constructor (sellIn, quality) {
+    super('Aged Brie', sellIn, quality);
+  }
+  update(){
+    this.sellIn -= 1;
+    this.quality += this.sellIn < 0 ? 2 : 1;
+    this.quality = this.quality > 50 ? 50 : this.quality;
+  }
+}
+
+class Sulfuras extends Item {
+  constructor(sellIn, quality) {
+    super('Sulfuras, Hand of Ragnaros', sellIn, quality);
+  }
+  update() {}
+}
+
+class BackstagePasses extends Item {
+  constructor(sellIn, quality) {
+    super('Backstage passes to a TAFKAL80ETC concert', sellIn, quality);
+  }
+  determineQuality(){
+    switch (true) {
+      case this.sellIn < 0:
+        this.quality = 0;
+        break;
+      case this.sellIn < 6:
+        this.quality += 3;
+        break;
+      case this.sellIn < 11:
+        this.quality += 2;
+        break;
+      default:
+        this.quality += 1;
+    }
+  }
+  update(){
+    this.sellIn -= 1;
+    this.determineQuality();
+    this.quality = this.quality > 50 ? 50 : this.quality;
+  }
+}
+
 class Shop {
   constructor(items=[]){
     this.items = items;
